@@ -1,6 +1,6 @@
 ### The Right Prompt
 function rprompt_time() {
-	echo -n "%F{242}$(date +%H:%M:%S)%f"
+	echo -n "%F{gray}%f %F{242}$(date +%H:%M:%S)%f"
 }
 
 function rprompt_git_status() {
