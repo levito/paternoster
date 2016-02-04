@@ -3,25 +3,29 @@ function rprompt_time() {
 	echo -n "%F{gray}%f %F{242}$(date +%H:%M:%S)%f"
 }
 
+function _upsearch() {
+	test / == $PWD && return 1 || test -e $1 && return || cd .. && _upsearch $1
+}
+
 function rprompt_git_status() {
-	if [ -d './.git' ]; then
+	if $(git rev-parse &> /dev/null); then
 		GIT_USER=$(git config --get user.email)
 		echo -n "%F{yellow}%f %F{242}$GIT_USER%f  "
 	fi
 }
 
 function rprompt_jenv_status() {
-	if $(type jenv >/dev/null 2>&1); then
-		if [ -f './pom.xml' ]; then
-			JENV_INFO=$(jenv version-name);
+	if $(type jenv &> /dev/null); then
+		if $(_upsearch pom.xml); then
+			JENV_INFO=$(jenv version-name)
 			echo -n "%F{blue}%%f %F{242}$JENV_INFO%f  "
 		fi
 	fi
 }
 
 function rprompt_rvm_status() {
-	if $(type rvm >/dev/null 2>&1); then
-		if [ -f './Gemfile' ]; then
+	if $(type rvm &> /dev/null); then
+		if $(_upsearch Gemfile); then
 			RVM_INFO=$(rvm current)
 			echo -n "%F{red}%f %F{242}$RVM_INFO%f  "
 		fi
@@ -29,8 +33,8 @@ function rprompt_rvm_status() {
 }
 
 function rprompt_nvm_status() {
-	if $(type nvm >/dev/null 2>&1); then
-		if [ -f './package.json' ]; then
+	if $(type nvm &> /dev/null); then
+		if $(_upsearch package.json); then
 			NVM_INFO=$(nvm current)
 			echo -n "%F{green}%f %F{242}$NVM_INFO%f  "
 		fi
