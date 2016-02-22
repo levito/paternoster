@@ -1,10 +1,10 @@
 ### The Right Prompt
-function rprompt_time() {
-	echo -n "%F{gray}%f %F{242}$(date +%H:%M:%S)%f"
+function _upsearch() {
+	test -e $1 && return || test ~ == $PWD && return 1 || cd .. && _upsearch $1
 }
 
-function _upsearch() {
-	test / == $PWD && return 1 || test -e $1 && return || cd .. && _upsearch $1
+function rprompt_time() {
+	echo -n "%F{gray}%f %F{242}$(date +%H:%M:%S)%f"
 }
 
 function rprompt_git_status() {
