@@ -1,6 +1,8 @@
 ### The Right Prompt
 function _upsearch() {
-	test -e $1 && return || test ~ == $PWD && return 1 || cd .. && _upsearch $1
+	test -e $1 && return ||
+	(test ~ == $PWD || test / == $PWD) && return 1 ||
+	cd .. && _upsearch $1
 }
 
 function rprompt_time() {
