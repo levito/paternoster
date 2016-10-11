@@ -1,9 +1,11 @@
 ### The Right Prompt
-function _upsearch() {
-	test -e $1 && return ||
-	(test ~ == $PWD || test / == $PWD) && return 1 ||
-	cd .. && _upsearch $1
-}
+# function find-up() {
+# 	_path=$PWD
+# 	while [[ "$_path" != "" && ! -e "$_path/$1" ]]; do
+# 		_path=${_path%/*}
+# 	done
+# 	echo "$_path"
+# }
 
 function rprompt_time() {
 	echo -n "%F{gray}%f %F{242}$(date +%H:%M:%S)%f"
@@ -18,27 +20,27 @@ function rprompt_git_status() {
 
 function rprompt_jenv_status() {
 	if $(type jenv &> /dev/null); then
-		if $(_upsearch pom.xml); then
+		if test $(find-up pom.xml) || test $(find-up build.xml) || test $(find-up build.gradle); then
 			JENV_INFO=$(jenv version-name)
-			echo -n "%F{blue}%%f %F{242}$JENV_INFO%f  "
+			echo -n "%F{blue}%f %F{242}$JENV_INFO%f  "
 		fi
 	fi
 }
 
 function rprompt_rvm_status() {
 	if $(type rvm &> /dev/null); then
-		if $(_upsearch Gemfile); then
+		if test $(find-up Gemfile); then
 			RVM_INFO=$(rvm current)
 			echo -n "%F{red}%f %F{242}$RVM_INFO%f  "
 		fi
 	fi
 }
 
-function rprompt_nvm_status() {
-	if $(type nvm &> /dev/null); then
-		if $(_upsearch package.json); then
-			NVM_INFO=$(nvm current)
-			echo -n "%F{green}%f %F{242}$NVM_INFO%f  "
+function rprompt_node_version() {
+	if $(type node &> /dev/null); then
+		if test $(find-up package.json); then
+			NODE_INFO=$(node -v)
+			echo -n "%F{green}%f %F{242}$NODE_INFO%f  "
 		fi
 	fi
 }
@@ -46,7 +48,7 @@ function rprompt_nvm_status() {
 build_rprompt() {
 	rprompt_jenv_status
 	rprompt_rvm_status
-	rprompt_nvm_status
+	rprompt_node_version
 	rprompt_git_status
 	rprompt_time
 }
